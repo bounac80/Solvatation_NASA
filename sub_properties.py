@@ -127,8 +127,8 @@ def fit_nasa(Tk, Pbar, zi, molecules, params):
             pot_mix_init = pot_mix
         # (if pure solvent)
         else:
-            Psat = Psat_pure[0] 
-            Psat_mix[idx,0] = Psat 
+            Psat = Psat_pure[0, 0]   # scalar, not shape-(1,) slice
+            Psat_mix[idx,0] = Psat
             
         #--------------------------------------------
         # Solvation free energies
