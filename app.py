@@ -37,7 +37,9 @@ from sub_properties import fit_nasa
 # ═══════════════════════════════════════════════════════════════════════
 # ═══════════════════════════════════════════════════════════════════════
 
-st.image('B2.png',width=850)
+#st.image('B2.png',width=850)
+
+st.image('B2.png')
 
 #st.markdown('<h1 class="main-title">THERGAS</h1>', unsafe_allow_html=True)
 #st.subheader('A computer program for the evaluation of thermochemical data of molecules and free radicals in the gas phase')
