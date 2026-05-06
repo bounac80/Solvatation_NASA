@@ -243,6 +243,12 @@ def mix_rule(T,z,lnGam,a,b,c,q1,s):
 """
 def molar_volume(P,T,a_mix,b_mix,phase):
 
+    # Ensure all inputs are Python scalars (safe across all numpy versions)
+    P     = float(np.squeeze(P))
+    T     = float(np.squeeze(T))
+    a_mix = float(np.squeeze(a_mix))
+    b_mix = float(np.squeeze(b_mix))
+
     # Dimensionless EoS parameters
     A = a_mix *P/(R*T)**2
     B = b_mix *P/(R*T)
