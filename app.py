@@ -247,12 +247,12 @@ if run_clicked:
                 {
                     "SMILES":      mol.smiles,
                     "Groupes":     mol.groups,
-                    "Composition": float(zi[i]),
+                    "Composition": float(zi[i, 0]),
                     "Tmin (K)":   float(thermochem["Tmin"]),
                     "Tmax (K)":   float(thermochem["Tmax"]),
-                    "R²":         float(thermochem["R2_nasa"][i]),
-                    "a1": coeffs[0], "a2": coeffs[1], "a3": coeffs[2],
-                    "a4": coeffs[3], "a5": coeffs[4], "a6": coeffs[5], "a7": coeffs[6],
+                    "R²":         float(thermochem["R2_nasa"][i, 0]),
+                    "a1": float(coeffs[0]), "a2": float(coeffs[1]), "a3": float(coeffs[2]),
+                    "a4": float(coeffs[3]), "a5": float(coeffs[4]), "a6": float(coeffs[5]), "a7": float(coeffs[6]),
                 }
             )
         df = pd.DataFrame(rows)
