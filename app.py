@@ -131,7 +131,7 @@ with st.sidebar:
         "Température maximale (K)", value=473.15, min_value=50.0, max_value=3000.0, step=5.0
     )
     n_T = st.number_input(
-        "Nombre de points en température", value=21, min_value=5, max_value=200, step=1
+        "Database", value=21, min_value=5, max_value=200, step=1
     )
 
     st.divider()
