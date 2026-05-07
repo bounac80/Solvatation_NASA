@@ -29,31 +29,6 @@ from sub_model import interaction_mtx
 from sub_load_molecules import loadmolecules
 from sub_properties import fit_nasa
 
-
-
-# ═══════════════════════════════════════════════════════════════════════
-# ═══════════════════════════════════════════════════════════════════════
-#  Introduction
-# ═══════════════════════════════════════════════════════════════════════
-# ═══════════════════════════════════════════════════════════════════════
-
-#st.image('B2.png',width=850)
-
-st.image('B2.png')
-
-#st.markdown('<h1 class="main-title">THERGAS</h1>', unsafe_allow_html=True)
-#st.subheader('A computer program for the evaluation of thermochemical data of molecules and free radicals in the gas phase')
-#st.subheader('The calculations are based on the methods developed by S.W. Benson: bond and group additivity')
-
-#st.markdown("***LRGP - Université de Lorraine, CNRS, LRGP, F-54000 Nancy, France***")
-#st.write("----------------------------------------------------------")
-#st.write("")
-#st.markdown('<a href="mailto:roda.bounaceur@univ-lorraine.fr"> If you have any problems please Contact us !</a>', unsafe_allow_html=True)
-
-#st.markdown("<hr style='height: 2px; background-color: #333;'>", unsafe_allow_html=True)
-
-
-
 # ──────────────────────────────────────────────────────────────
 # Page configuration
 # ──────────────────────────────────────────────────────────────
@@ -63,11 +38,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-
-
-
-
-
 
 # ──────────────────────────────────────────────────────────────
 # Cached resource loader (runs once per server session)
@@ -131,7 +101,7 @@ with st.sidebar:
         "Température maximale (K)", value=473.15, min_value=50.0, max_value=3000.0, step=5.0
     )
     n_T = st.number_input(
-        "Database", value=21, min_value=5, max_value=200, step=1
+        "Nombre de points en température", value=21, min_value=5, max_value=200, step=1
     )
 
     st.divider()
@@ -267,8 +237,6 @@ if run_clicked:
             thermochem = fit_nasa(Tk, Pbar_val, zi, Molecules, params)
             elapsed = time.time() - t0
 
-        st.success(f"✅ Calcul terminé en **{elapsed:.1f} secondes**")
-
         # ── Build results DataFrame ──
         rows = []
         for i, mol in enumerate(Molecules):
@@ -286,41 +254,32 @@ if run_clicked:
                 }
             )
         df = pd.DataFrame(rows)
-
-        # ── Display table ──
-        st.subheader("📊 Résultats — Coefficients NASA de solvatation")
-        fmt = {"Composition": "{:.4f}", "R²": "{:.4f}"}
-        fmt.update({f"a{k}": "{:.4e}" for k in range(1, 8)})
-        st.dataframe(df.style.format(fmt), use_container_width=True, height=420)
-
-        # ── Download buttons ──
-        st.subheader("⬇️ Télécharger les résultats")
-        dl1, dl2 = st.columns(2)
-
-        with dl1:
-            csv_buf = io.StringIO()
-            df.to_csv(csv_buf, sep=";", index=False)
-            st.download_button(
-                label="📄 Télécharger CSV",
-                data=csv_buf.getvalue().encode("utf-8"),
-                file_name="solv-thermochem.csv",
-                mime="text/csv",
-                use_container_width=True,
-            )
-
-        with dl2:
-            jl_buf = io.BytesIO()
-            joblib.dump(thermochem, jl_buf)
-            jl_buf.seek(0)
-            st.download_button(
-                label="🗜️ Télécharger Joblib",
-                data=jl_buf,
-                file_name="solv-thermochem.joblib",
-                mime="application/octet-stream",
-                use_container_width=True,
-            )
+        st.session_state["results_df"] = df
+        st.session_state["elapsed"]    = elapsed
 
     gc.collect()
+
+# ──────────────────────────────────────────────────────────────
+# Results (persistent across re-runs / download clicks)
+# ──────────────────────────────────────────────────────────────
+if "results_df" in st.session_state:
+    df = st.session_state["results_df"]
+
+    st.success(f"✅ Calcul terminé en **{st.session_state['elapsed']:.1f} secondes**")
+    st.subheader("📊 Résultats — Coefficients NASA de solvatation")
+    fmt = {"Composition": "{:.4f}", "R²": "{:.4f}"}
+    fmt.update({f"a{k}": "{:.4e}" for k in range(1, 8)})
+    st.dataframe(df.style.format(fmt), use_container_width=True, height=420)
+
+    st.subheader("⬇️ Télécharger les résultats")
+    csv_buf = io.StringIO()
+    df.to_csv(csv_buf, sep=";", index=False)
+    st.download_button(
+        label="📄 Télécharger CSV",
+        data=csv_buf.getvalue().encode("utf-8"),
+        file_name="solv-thermochem.csv",
+        mime="text/csv",
+    )
 
 # ──────────────────────────────────────────────────────────────
 # Footer
